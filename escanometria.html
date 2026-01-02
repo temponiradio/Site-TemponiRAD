@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gerador de Laudos de Escanometria</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #0f172a;
+            --accent: #3b82f6;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        /* Dark Theme Variables */
+        .dark-theme {
+            --primary: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --secondary: #f1f5f9;
+            --accent: #60a5fa;
+            --light-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-light: #94a3b8;
+            --border: #334155;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background: var(--light-bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            width: 100%;
+        }
+
+        /* Header */
+        header {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo-text h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 4px;
+        }
+
+        .logo-text p {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Botão de voltar ao menu */
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--light-bg);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .back-button i {
+            font-size: 14px;
+        }
+
+        .theme-toggle {
+            background: var(--light-bg);
+            border: 2px solid var(--border);
+            width: 50px;
+            height: 26px;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .dark-theme .theme-toggle::before {
+            transform: translateX(24px);
+        }
+
+        .theme-icon {
+            position: absolute;
+            font-size: 12px;
+        }
+
+        .sun-icon {
+            left: 6px;
+            color: #f59e0b;
+        }
+
+        .moon-icon {
+            right: 6px;
+            color: #94a3b8;
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 25px;
+            padding: 25px 0;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .card-title h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        /* Ads Section - Distribuídos */
+        .ad-container {
+            background: var(--light-bg);
+            border-radius: var(--radius-sm);
+            border: 1px dashed var(--border);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .ad-container.banner {
+            width: 100%;
+            min-height: 90px;
+        }
+
+        .ad-container.medium {
+            min-height: 250px;
+            width: 100%;
+        }
+
+        .ad-container.small {
+            min-height: 100px;
+            width: 100%;
+        }
+
+        .ad-label {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.1);
+            color: var(--text-light);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .ad-placeholder {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 12px;
+            padding: 15px;
+        }
+
+        .ad-placeholder i {
+            font-size: 20px;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        /* Form Section */
+        .measurement-section {
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .input-field {
+            position: relative;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            transition: all 0.3s;
+            background: var(--light-bg);
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .unit {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .measurement-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-light);
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        /* Results Section */
+        .results-section {
+            background: var(--light-bg);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .result-label {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        /* Notes Section */
+        .notes-section {
+            margin-bottom: 25px;
+        }
+
+        .notes-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .note-option {
+            background: var(--light-bg);
+            border: 2px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .note-option:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .note-option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .custom-notes {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            resize: vertical;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: var(--light-bg);
+            color: var(--text);
+        }
+
+        .custom-notes:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Report Section */
+        .report-section {
+            margin-top: 30px;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .report-output {
+            background: var(--light-bg);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 2px solid var(--border);
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            min-height: 200px;
+            line-height: 1.8;
+            color: var(--text);
+            font-size: 15px;
+        }
+
+        .report-placeholder {
+            color: var(--text-light);
+            font-style: italic;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card-bg);
+            color: var(--text);
+            padding: 25px 0;
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .copyright {
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .developer {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .status-ready {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-waiting {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .back-button {
+                padding: 8px 10px;
+            }
+            
+            .back-text {
+                display: none;
+            }
+            
+            .back-button i {
+                font-size: 16px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .report-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .ad-container.medium {
+                min-height: 200px;
+            }
+        }
+
+        /* Ads Sidebar */
+        .ads-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Content Ads */
+        .content-ad {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-ruler-combined"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Escanometria Digital</h1>
+                        <p>Gerador de laudos</p>
+                    </div>
+                </div>
+                
+                <div class="header-controls">
+                    <!-- Botão de voltar ao menu -->
+                    <a href="index.html" class="back-button" title="Voltar ao menu principal">
+                        <i class="fas fa-home"></i>
+                        <span class="back-text">Menu</span>
+                    </a>
+                    
+                    <div class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-sun theme-icon sun-icon"></i>
+                        <i class="fas fa-moon theme-icon moon-icon"></i>
+                    </div>
+                    <div class="status-indicator status-waiting">
+                        <i class="fas fa-clock"></i> Aguardando dados
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Banner Ad Top -->
+        <div class="ad-container banner" id="bannerTop">
+            <div class="ad-placeholder">
+                <i class="fas fa-ad"></i>
+                <div>Banner 728x90</div>
+            </div>
+            <div class="ad-label">Publicidade</div>
+        </div>
+
+        <div class="main-content">
+            <!-- Main Content Column -->
+            <div>
+                <!-- Measurement Card -->
+                <section class="card">
+                    <div class="card-title">
+                        <i class="fas fa-ruler-vertical"></i>
+                        <h2>Medições dos Membros Inferiores</h2>
+                        <span id="status-indicator" class="status-indicator status-waiting">
+                            <i class="fas fa-clock"></i> Aguardando dados
+                        </span>
+                    </div>
+                    
+                    <div class="measurement-section">
+                        <div class="input-group">
+                            <div class="input-field">
+                                <label for="mid">
+                                    <i class="fas fa-arrow-right"></i> MID (Membro Inferior Direito)
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="mid" placeholder="Ex: 941.14" step="0.01" min="0" inputmode="decimal">
+                                    <span class="unit">mm</span>
+                                </div>
+                                <div class="measurement-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Digite o valor em milímetros
+                                </div>
+                            </div>
+                            
+                            <div class="input-field">
+                                <label for="mie">
+                                    <i class="fas fa-arrow-left"></i> MIE (Membro Inferior Esquerdo)
+                                </label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="mie" placeholder="Ex: 928.62" step="0.01" min="0" inputmode="decimal">
+                                    <span class="unit">mm</span>
+                                </div>
+                                <div class="measurement-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    Digite o valor em milímetros
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Results Preview -->
+                    <div class="results-section" id="results-preview">
+                        <div class="results-grid">
+                            <div class="result-card">
+                                <div class="result-value" id="diff-value">0.00</div>
+                                <div class="result-label">Diferença (cm)</div>
+                            </div>
+                            <div class="result-card">
+                                <div class="result-value" id="diff-mm-value">0.0</div>
+                                <div class="result-label">Diferença (mm)</div>
+                            </div>
+                            <div class="result-card">
+                                <div class="result-value" id="longer-side">-</div>
+                                <div class="result-label">Membro mais longo</div>
+                            </div>
+                        </div>
+                        <div id="conclusion-preview" style="font-size: 14px; color: var(--text);">
+                            <!-- Preview será inserido aqui -->
+                        </div>
+                    </div>
+                    
+                    <!-- Notes Section -->
+                    <div class="notes-section">
+                        <div class="card-title">
+                            <i class="fas fa-sticky-note"></i>
+                            <h2>Observações Adicionais (Opcional)</h2>
+                        </div>
+                        
+                        <div class="notes-options">
+                            <div class="note-option" data-value="Paciente em ortostatismo">
+                                Paciente em ortostatismo
+                            </div>
+                            <div class="note-option" data-value="Assimetria discreta">
+                                Assimetria discreta
+                            </div>
+                            <div class="note-option" data-value="Assimetria moderada">
+                                Assimetria moderada
+                            </div>
+                            <div class="note-option" data-value="Assimetria acentuada">
+                                Assimetria acentuada
+                            </div>
+                        </div>
+                        
+                        <textarea id="custom-notes" class="custom-notes" 
+                                placeholder="Outras observações..."></textarea>
+                    </div>
+                </section>
+
+                <!-- Banner Ad Middle -->
+                <div class="ad-container banner" id="bannerMiddle">
+                    <div class="ad-placeholder">
+                        <i class="fas fa-ad"></i>
+                        <div>Banner 728x90</div>
+                    </div>
+                    <div class="ad-label">Publicidade</div>
+                </div>
+                
+                <!-- Report Section -->
+                <section class="card report-section">
+                    <div class="report-header">
+                        <div class="card-title">
+                            <i class="fas fa-file-medical"></i>
+                            <h2>Laudo de Escanometria</h2>
+                        </div>
+                        <div class="report-actions">
+                            <button id="generate-report" class="btn btn-primary">
+                                <i class="fas fa-play"></i> Gerar Laudo
+                            </button>
+                            <button id="copy-report" class="btn btn-secondary" disabled>
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                            <button id="save-pdf" class="btn btn-secondary" disabled>
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="report-output" id="report-output">
+                        <div class="report-placeholder">
+                            <i class="fas fa-file-medical-alt" style="font-size: 40px; margin-bottom: 12px; opacity: 0.3;"></i>
+                            <p>Insira as medições acima e clique em "Gerar Laudo"</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Banner Ad Bottom -->
+                <div class="ad-container banner" id="bannerBottom">
+                    <div class="ad-placeholder">
+                        <i class="fas fa-ad"></i>
+                        <div>Banner 728x90</div>
+                    </div>
+                    <div class="ad-label">Publicidade</div>
+                </div>
+            </div>
+            
+            <!-- Ads Sidebar -->
+            <div class="ads-sidebar">
+                <!-- Sidebar Ad 1 -->
+                <div class="ad-container medium" id="sidebarAd1">
+                    <div class="ad-placeholder">
+                        <i class="fas fa-ad"></i>
+                        <div>Anúncio 300x250</div>
+                        <div style="font-size: 10px; margin-top: 5px;">AdSense/PropellerAds</div>
+                    </div>
+                    <div class="ad-label">Publicidade</div>
+                </div>
+                
+                <!-- Sidebar Ad 2 -->
+                <div class="ad-container small" id="sidebarAd2">
+                    <div class="ad-placeholder">
+                        <i class="fas fa-ad"></i>
+                        <div>Anúncio 300x100</div>
+                    </div>
+                    <div class="ad-label">Publicidade</div>
+                </div>
+
+                <!-- Sidebar Ad 3 -->
+                <div class="ad-container medium" id="sidebarAd3">
+                    <div class="ad-placeholder">
+                        <i class="fas fa-ad"></i>
+                        <div>Anúncio 300x250</div>
+                    </div>
+                    <div class="ad-label">Publicidade</div>
+                </div>
+
+                <!-- Sidebar Ad 4 -->
+                <div class="ad-container small" id="sidebarAd4">
+                    <div class="ad-placeholder">
+                        <i class="fas fa-ad"></i>
+                        <div>Anúncio 300x100</div>
+                    </div>
+                    <div class="ad-label">Publicidade</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="copyright">
+                    © 2025 — Desenvolvido por Bárbara Vilaça Temponi. Todos os direitos reservados.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos DOM
+            const midInput = document.getElementById('mid');
+            const mieInput = document.getElementById('mie');
+            const generateBtn = document.getElementById('generate-report');
+            const copyBtn = document.getElementById('copy-report');
+            const savePdfBtn = document.getElementById('save-pdf');
+            const reportOutput = document.getElementById('report-output');
+            const noteOptions = document.querySelectorAll('.note-option');
+            const customNotes = document.getElementById('custom-notes');
+            const resultsPreview = document.getElementById('results-preview');
+            const statusIndicator = document.getElementById('status-indicator');
+            const headerStatus = document.querySelector('.header-controls .status-indicator');
+            const themeToggle = document.getElementById('themeToggle');
+            
+            // Elementos de preview
+            const diffValueElement = document.getElementById('diff-value');
+            const diffMmValueElement = document.getElementById('diff-mm-value');
+            const longerSideElement = document.getElementById('longer-side');
+            const conclusionPreviewElement = document.getElementById('conclusion-preview');
+            
+            let selectedNotes = [];
+            let currentReport = '';
+            let isDarkTheme = true;
+            
+            // Inicializar tema
+            function initTheme() {
+                const savedTheme = localStorage.getItem('escanometria-theme');
+                if (savedTheme === 'light') {
+                    document.body.classList.remove('dark-theme');
+                    isDarkTheme = false;
+                } else {
+                    document.body.classList.add('dark-theme');
+                    isDarkTheme = true;
+                }
+            }
+            
+            // Alternar tema
+            themeToggle.addEventListener('click', function() {
+                if (isDarkTheme) {
+                    document.body.classList.remove('dark-theme');
+                    localStorage.setItem('escanometria-theme', 'light');
+                    isDarkTheme = false;
+                } else {
+                    document.body.classList.add('dark-theme');
+                    localStorage.setItem('escanometria-theme', 'dark');
+                    isDarkTheme = true;
+                }
+            });
+            
+            // Inicializar notas selecionadas
+            noteOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    const noteValue = this.getAttribute('data-value');
+                    
+                    if (this.classList.contains('selected')) {
+                        selectedNotes.push(noteValue);
+                    } else {
+                        selectedNotes = selectedNotes.filter(note => note !== noteValue);
+                    }
+                    
+                    updateResults();
+                });
+            });
+            
+            // Atualizar resultados em tempo real
+            function updateResults() {
+                const mid = parseFloat(midInput.value);
+                const mie = parseFloat(mieInput.value);
+                
+                if (isNaN(mid) || isNaN(mie)) {
+                    statusIndicator.className = 'status-indicator status-waiting';
+                    statusIndicator.innerHTML = '<i class="fas fa-clock"></i> Aguardando dados';
+                    headerStatus.className = 'status-indicator status-waiting';
+                    headerStatus.innerHTML = '<i class="fas fa-clock"></i> Aguardando dados';
+                    resultsPreview.style.display = 'none';
+                    copyBtn.disabled = true;
+                    savePdfBtn.disabled = true;
+                    return;
+                }
+                
+                // Calcular diferenças
+                const diffMm = Math.abs(mie - mid);
+                const diffCm = diffMm / 10;
+                
+                // Determinar qual membro é maior
+                let longerSide = '';
+                let conclusionText = '';
+                
+                if (mid > mie) {
+                    longerSide = 'DIREITO';
+                    conclusionText = `O membro inferior direito mede cerca de ${diffCm.toFixed(1)} cm a mais que o esquerdo.`;
+                } else if (mie > mid) {
+                    longerSide = 'ESQUERDO';
+                    conclusionText = `O membro inferior esquerdo mede cerca de ${diffCm.toFixed(1)} cm a mais que o direito.`;
+                } else {
+                    longerSide = 'IGUAIS';
+                    conclusionText = 'Os membros inferiores apresentam comprimentos iguais.';
+                }
+                
+                // Atualizar elementos de preview
+                diffValueElement.textContent = diffCm.toFixed(2);
+                diffMmValueElement.textContent = diffMm.toFixed(1);
+                longerSideElement.textContent = longerSide;
+                conclusionPreviewElement.innerHTML = `<strong>Pré-visualização:</strong> ${conclusionText}`;
+                
+                // Mostrar resultados
+                resultsPreview.style.display = 'block';
+                statusIndicator.className = 'status-indicator status-ready';
+                statusIndicator.innerHTML = '<i class="fas fa-check-circle"></i> Dados prontos';
+                headerStatus.className = 'status-indicator status-ready';
+                headerStatus.innerHTML = '<i class="fas fa-check-circle"></i> Dados prontos';
+                copyBtn.disabled = false;
+                savePdfBtn.disabled = false;
+            }
+            
+            // Gerar laudo objetivo
+            function generateReport() {
+                const mid = parseFloat(midInput.value);
+                const mie = parseFloat(mieInput.value);
+                
+                if (isNaN(mid) || isNaN(mie)) {
+                    alert('Por favor, preencha ambos os valores de MID e MIE.');
+                    midInput.focus();
+                    return;
+                }
+                
+                // Calcular diferença
+                const diffMm = Math.abs(mie - mid);
+                const diffCm = diffMm / 10;
+                
+                // Determinar qual membro é maior
+                let conclusion = '';
+                
+                if (mid > mie) {
+                    conclusion = `O membro inferior direito mede cerca de ${diffCm.toFixed(1).replace('.', ',')} cm a mais que o esquerdo.`;
+                } else if (mie > mid) {
+                    conclusion = `O membro inferior esquerdo mede cerca de ${diffCm.toFixed(1).replace('.', ',')} cm a mais que o direito.`;
+                } else {
+                    conclusion = 'Os membros inferiores apresentam comprimentos iguais.';
+                }
+                
+                // Formatar números com vírgula decimal
+                const formatNumber = (num) => {
+                    return num.toFixed(2).replace('.', ',');
+                };
+                
+                // Construir o laudo objetivo
+                let report = `ESCANOMETRIA DE MEMBROS INFERIORES\n`;
+                report += `MID_________${formatNumber(mid)} mm\n`;
+                report += `MIE_________${formatNumber(mie)} mm\n`;
+                report += `\n`;
+                report += `Impressão: ${conclusion}\n`;
+                
+                // Adicionar notas se houver
+                if (selectedNotes.length > 0 || customNotes.value.trim() !== '') {
+                    report += `\n`;
+                    
+                    if (selectedNotes.length > 0) {
+                        selectedNotes.forEach(note => {
+                            report += `${note}\n`;
+                        });
+                    }
+                    
+                    if (customNotes.value.trim() !== '') {
+                        report += `${customNotes.value.trim()}\n`;
+                    }
+                }
+                
+                // Atualizar saída
+                reportOutput.innerHTML = `<pre style="font-family: 'Courier New', monospace; font-size: 15px; line-height: 1.6;">${report}</pre>`;
+                currentReport = report;
+                
+                // Feedback visual
+                generateBtn.innerHTML = '<i class="fas fa-check"></i> Pronto!';
+                setTimeout(() => {
+                    generateBtn.innerHTML = '<i class="fas fa-play"></i> Gerar Laudo';
+                }, 1000);
+                
+                return report;
+            }
+            
+            // Evento do botão gerar
+            generateBtn.addEventListener('click', generateReport);
+            
+            // Copiar laudo para a área de transferência
+            copyBtn.addEventListener('click', function() {
+                if (!currentReport) {
+                    const report = generateReport();
+                    if (!report) return;
+                }
+                
+                navigator.clipboard.writeText(currentReport).then(() => {
+                    // Feedback visual
+                    const originalHTML = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                    copyBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalHTML;
+                        copyBtn.disabled = false;
+                    }, 1500);
+                }).catch(err => {
+                    console.error('Erro ao copiar: ', err);
+                    
+                    // Fallback para seleção manual
+                    reportOutput.focus();
+                    const range = document.createRange();
+                    range.selectNodeContents(reportOutput.querySelector('pre'));
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    
+                    try {
+                        document.execCommand('copy');
+                        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                        setTimeout(() => {
+                            copyBtn.innerHTML = '<i class="far fa-copy"></i> Copiar';
+                        }, 1500);
+                    } catch(e) {
+                        alert('Selecione e copie o texto manualmente (Ctrl+C).');
+                    }
+                });
+            });
+            
+            // Botão de PDF (simulado)
+            savePdfBtn.addEventListener('click', function() {
+                if (!currentReport) {
+                    const report = generateReport();
+                    if (!report) return;
+                }
+                
+                savePdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando...';
+                setTimeout(() => {
+                    savePdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> PDF';
+                    alert('PDF gerado com sucesso! (Funcionalidade simulada)');
+                }, 1000);
+            });
+            
+            // Atualizar resultados em tempo real
+            midInput.addEventListener('input', updateResults);
+            mieInput.addEventListener('input', updateResults);
+            customNotes.addEventListener('input', updateResults);
+            
+            // Permitir Enter para gerar laudo
+            midInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generateBtn.click();
+                }
+            });
+            
+            mieInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generateBtn.click();
+                }
+            });
+            
+            // Inicializar
+            initTheme();
+            
+            // Valores vazios
+            midInput.value = '';
+            mieInput.value = '';
+            
+            // Focar no primeiro campo
+            setTimeout(() => {
+                midInput.focus();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

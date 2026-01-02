@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TemponiRAD | Plataforma de Automação de Laudos Médicos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset e Variáveis CSS */
+        :root {
+            --primary: #1a237e;
+            --primary-dark: #0d145a;
+            --primary-light: #e8eaf6;
+            --secondary: #283593;
+            --accent: #00b0ff;
+            --success: #00c853;
+            --warning: #ff9100;
+            --error: #ff1744;
+            --bg-light: #f5f7ff;
+            --bg-white: #ffffff;
+            --text-dark: #1a1a2e;
+            --text-medium: #2d3748;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Header Profissional */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            z-index: 1000;
+            padding: 18px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-text h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Navegação Principal */
+        .main-nav ul {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            color: var(--text-medium);
+            font-weight: 600;
+            font-size: 15px;
+            padding: 10px 0;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main-nav a:hover {
+            color: var(--primary);
+        }
+
+        .main-nav a.active {
+            color: var(--primary);
+        }
+
+        .main-nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 3px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .btn-outline {
+            padding: 10px 24px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section Profissional */
+        .hero-section {
+            padding: 160px 0 100px;
+            background: linear-gradient(135deg, #f5f7ff 0%, #eef2ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.05) 0%, rgba(0, 176, 255, 0.05) 100%);
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+
+        .hero-content {
+            max-width: 700px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 176, 255, 0.1);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-medium);
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 48px;
+        }
+
+        .stat-item h3 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-item p {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Seção de Funcionalidades */
+        .features-section {
+            padding: 100px 0;
+            background: var(--bg-white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-label {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Grid de Ferramentas */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .tool-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: transparent;
+        }
+
+        .tool-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary-light), #e3f2fd);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 28px;
+            color: var(--primary);
+        }
+
+        .tool-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .tool-card p {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .tool-features {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+
+        .tool-features li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--text-medium);
+        }
+
+        .tool-features li i {
+            color: var(--success);
+            font-size: 12px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Seção de Informações REFORMULADA */
+        .info-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #eef2ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.03) 0%, rgba(0, 176, 255, 0.03) 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+            z-index: 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            padding: 60px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(to right, var(--primary), var(--accent), var(--success));
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
+        }
+
+        .guide-icon {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, var(--primary-light), #e3f2fd);
+            border-radius: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+            font-size: 56px;
+            color: var(--primary);
+            box-shadow: var(--shadow-xl);
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-card:hover .guide-icon {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 15px 30px rgba(26, 35, 126, 0.2);
+        }
+
+        .info-card h3 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            line-height: 1.2;
+            max-width: 800px;
+        }
+
+        .info-card p {
+            font-size: 18px;
+            color: var(--text-medium);
+            line-height: 1.8;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .guide-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .guide-feature-item {
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.8) 100%);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            border: 1px solid rgba(226, 232, 240, 0.6);
+            transition: var(--transition);
+            text-align: left;
+        }
+
+        .guide-feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+            background: white;
+        }
+
+        .guide-feature-item i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: block;
+            background: linear-gradient(135deg, var(--primary-light), #e3f2fd);
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guide-feature-item h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .guide-feature-item p {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        .btn-guide {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-guide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .btn-guide:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 35px rgba(26, 35, 126, 0.3);
+        }
+
+        .btn-guide:hover::before {
+            left: 100%;
+        }
+
+        .btn-guide i {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-guide:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Seção de Recursos */
+        .resources-section {
+            padding: 100px 0;
+            background: var(--bg-white);
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .resource-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .resource-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-light), #e3f2fd);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: var(--primary);
+        }
+
+        .resource-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .resource-card p {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Footer Profissional */
+        .main-footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 80px 0 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-col h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col ul li a {
+            color: #cbd5e0;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 15px;
+        }
+
+        .footer-col ul li a:hover {
+            color: white;
+            padding-left: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 40px;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* Modal de Detalhes */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* Espaços para Anúncios */
+        .ad-space {
+            margin: 40px auto;
+            text-align: center;
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 1px dashed var(--border);
+        }
+
+        .ad-label {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-light);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ad-banner {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            margin: 10px auto;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+        }
+
+        .ad-square {
+            width: 300px;
+            height: 250px;
+            margin: 10px auto;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+        }
+
+        .ad-sidebar {
+            width: 160px;
+            height: 600px;
+            margin: 10px auto;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+        }
+
+        /* Responsividade */
+        @media (max-width: 1200px) {
+            .guide-features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 30px;
+            }
+            
+            .hero-title {
+                font-size: 42px;
+            }
+            
+            .main-nav ul {
+                gap: 20px;
+            }
+
+            .ad-sidebar {
+                width: 120px;
+                height: 400px;
+            }
+
+            .info-card {
+                padding: 50px 40px;
+            }
+
+            .info-card h3 {
+                font-size: 28px;
+            }
+
+            .guide-features {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .main-nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .hero-section {
+                padding: 140px 0 60px;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-card {
+                padding: 40px 30px;
+            }
+
+            .info-card h3 {
+                font-size: 24px;
+            }
+
+            .info-card p {
+                font-size: 16px;
+            }
+
+            .guide-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .guide-feature-item {
+                padding: 20px;
+            }
+
+            .guide-feature-item h4 {
+                font-size: 16px;
+            }
+
+            .guide-feature-item p {
+                font-size: 14px;
+            }
+
+            .btn-guide {
+                padding: 16px 35px;
+                font-size: 16px;
+            }
+
+            .ad-banner {
+                max-width: 100%;
+                height: 50px;
+            }
+
+            .ad-square {
+                width: 250px;
+                height: 200px;
+            }
+
+            .ad-sidebar {
+                width: 100%;
+                height: 100px;
+                margin: 20px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 30px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .tool-card {
+                padding: 24px;
+            }
+            
+            .features-section,
+            .info-section,
+            .resources-section {
+                padding: 60px 0;
+            }
+
+            .info-card {
+                padding: 30px 20px;
+            }
+
+            .guide-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+
+            .info-card h3 {
+                font-size: 22px;
+            }
+
+            .info-card p {
+                font-size: 15px;
+            }
+
+            .guide-features {
+                gap: 15px;
+            }
+
+            .guide-feature-item {
+                padding: 15px;
+            }
+
+            .guide-feature-item i {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                margin-bottom: 12px;
+            }
+
+            .btn-guide {
+                padding: 14px 28px;
+                font-size: 15px;
+            }
+
+            .ad-square {
+                width: 200px;
+                height: 150px;
+            }
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            transform-origin: left;
+            transform: scaleX(0);
+            z-index: 1001;
+            transition: transform 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>TemponiRAD</h1>
+                        <p>Radiologia e Diagnóstico por Imagem</p>
+                    </div>
+                </a>
+                
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#home" class="active"><i class="fas fa-home"></i> Início</a></li>
+                        <li><a href="#tools"><i class="fas fa-tools"></i> Ferramentas</a></li>
+                        <li><a href="#info"><i class="fas fa-info-circle"></i> Informações</a></li>
+                        <li><a href="#resources"><i class="fas fa-book"></i> Recursos</a></li>
+                        <li><a href="#contact"><i class="fas fa-envelope"></i> Contato</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="nav-actions">
+                    <a href="#contact" class="btn-outline">Entrar em Contato</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Anúncio Topo -->
+    <div class="ad-space">
+        <div class="ad-label">Publicidade</div>
+        <div class="ad-banner" id="adsterra-top">
+            <!-- Adsterra Banner 728x90 -->
+            Espaço para Adsterra - Banner 728x90
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="hero-content animate-in">
+                <span class="hero-badge">
+                    <i class="fas fa-rocket"></i>
+                    Plataforma Profissional
+                </span>
+                <h1 class="hero-title">Automação Inteligente para Laudos Médicos</h1>
+                <p class="hero-subtitle">
+                    Soluções digitais desenvolvidas por radiologistas para radiologistas. 
+                    Otimize seu fluxo de trabalho com ferramentas especializadas que combinam 
+                    expertise médica com tecnologia.
+                </p>
+                <a href="#tools" class="btn-primary">
+                    <i class="fas fa-play-circle"></i>
+                    Explorar Ferramentas
+                </a>
+                
+                <div class="hero-stats">
+                    <div class="stat-item animate-in delay-1">
+                        <h3>7+</h3>
+                        <p>Especialidades</p>
+                    </div>
+                    <div class="stat-item animate-in delay-2">
+                        <h3>100%</h3>
+                        <p>Confiabilidade</p>
+                    </div>
+                    <div class="stat-item animate-in delay-3">
+                        <h3>24/7</h3>
+                        <p>Disponibilidade</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Anúncio Meio da Página 1 -->
+    <div class="ad-space">
+        <div class="ad-label">Publicidade</div>
+        <div class="ad-square" id="propellerads-square">
+            <!-- PropellerAds Square 300x250 -->
+            Espaço para PropellerAds - Quadrado 300x250
+        </div>
+    </div>
+
+    <!-- Ferramentas -->
+    <section id="tools" class="features-section">
+        <div class="container">
+            <div class="section-header animate-in">
+                <span class="section-label">FERRAMENTAS PROFISSIONAIS</span>
+                <h2 class="section-title">Automatizadores de Laudos</h2>
+                <p class="section-subtitle">
+                    Ferramenta para produção eficiente de laudos médicos padronizados
+                </p>
+            </div>
+            
+            <div class="tools-grid">
+                <!-- Densitometria -->
+                <div class="tool-card animate-in delay-1">
+                    <div class="tool-icon">
+                        <i class="fas fa-bone"></i>
+                    </div>
+                    <h3>Densitometria Óssea</h3>
+                    <p>Sistema completo para laudos de DXA com cálculo automático de T-score e Z-score, seguindo diretrizes da ISCD.</p>
+                    <ul class="tool-features">
+                        <li><i class="fas fa-check"></i> Interpretação automática por critérios da OMS</li>
+                        <li><i class="fas fa-check"></i> Comparação temporal inteligente</li>
+                        <li><i class="fas fa-check"></i> Exportação</li>
+                    </ul>
+                    <a href="densitometria.html" class="btn-primary">
+                        <i class="fas fa-external-link-alt"></i>
+                        Acessar Ferramenta
+                    </a>
+                </div>
+
+                <!-- Radiografia -->
+                <div class="tool-card animate-in delay-2">
+                    <div class="tool-icon">
+                        <i class="fas fa-x-ray"></i>
+                    </div>
+                    <h3>Radiografia</h3>
+                    <p>Sistema inteligente para laudos de radiografias convencionais com biblioteca de achados e descrições padronizadas.</p>
+                    <ul class="tool-features">
+                        <li><i class="fas fa-check"></i> Laudos por sistema corporal</li>
+                        <li><i class="fas fa-check"></i> Modelos específicos por exame</li>
+                        <li><i class="fas fa-check"></i> Sugestões de diagnóstico diferencial</li>
+                    </ul>
+                    <a href="radiografia.html" class="btn-primary">
+                        <i class="fas fa-external-link-alt"></i>
+                        Acessar Ferramenta
+                    </a>
+                </div>
+
+                <!-- Ultrassonografia -->
+                <div class="tool-card animate-in delay-3">
+                    <div class="tool-icon">
+                        <i class="fas fa-wave-square"></i>
+                    </div>
+                    <h3>Ultrassonografia</h3>
+                    <p>Ferramenta para otimizar laudos de USG.</p>
+                    <ul class="tool-features">
+                        <li><i class="fas fa-check"></i> USG abdominal e pélvica</li>
+                        <li><i class="fas fa-check"></i> USG com Doppler</li>
+                        <li><i class="fas fa-check"></i> Obstetrícia e ginecologia</li>
+                    </ul>
+                    <a href="#" class="btn-primary" onclick="showModal('ultrassonografia')">
+                        <i class="fas fa-external-link-alt"></i>
+                        Em Breve
+                    </a>
+                </div>
+
+                <!-- Tomografia -->
+                <div class="tool-card animate-in delay-4">
+                    <div class="tool-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Tomografia Computadorizada</h3>
+                    <p>Sistema para laudos de TC com ênfase em protocolos específicos e achados relevantes.</p>
+                    <ul class="tool-features">
+                        <li><i class="fas fa-check"></i> TC de crânio e coluna</li>
+                        <li><i class="fas fa-check"></i> TC torácica e abdominal</li>
+                        <li><i class="fas fa-check"></i> Angio-TC</li>
+                    </ul>
+                    <a href="#" class="btn-primary" onclick="showModal('tomografia')">
+                        <i class="fas fa-external-link-alt"></i>
+                        Em Breve
+                    </a>
+                </div>
+
+                <!-- Ressonância -->
+                <div class="tool-card animate-in">
+                    <div class="tool-icon">
+                        <i class="fas fa-magnet"></i>
+                    </div>
+                    <h3>Ressonância Magnética</h3>
+                    <p>Plataforma especializada para laudos de RM com sequências específicas e achados detalhados.</p>
+                    <ul class="tool-features">
+                        <li><i class="fas fa-check"></i> RM de encéfalo e coluna</li>
+                        <li><i class="fas fa-check"></i> RM musculoesquelética</li>
+                        <li><i class="fas fa-check"></i> RM abdominal e pélvica</li>
+                    </ul>
+                    <a href="#" class="btn-primary" onclick="showModal('ressonancia')">
+                        <i class="fas fa-external-link-alt"></i>
+                        Em Breve
+                    </a>
+                </div>
+
+                <!-- Exames Contrastados -->
+                <div class="tool-card animate-in delay-1">
+                    <div class="tool-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <h3>Exames Contrastados</h3>
+                    <p>Sistema especializado para laudos de exames que utilizam meios de contraste, com protocolos de segurança e documentação completa.</p>
+                    <ul class="tool-features">
+                        <li><i class="fas fa-check"></i> SEED e histerossalpingografia</li>
+                        <li><i class="fas fa-check"></i> Descrição de alterações</li>
+                        <li><i class="fas fa-check"></i> Impressões</li>
+                    </ul>
+                    <a href="#" class="btn-primary" onclick="showModal('exames_contrastados')">
+                        <i class="fas fa-external-link-alt"></i>
+                        Em Breve
+                    </a>
+                </div>
+
+                <!-- Escanometria -->
+                <div class="tool-card animate-in delay-2">
+                    <div class="tool-icon">
+                        <i class="fas fa-ruler-combined"></i>
+                    </div>
+                    <h3>Escanometria</h3>
+                    <p>Ferramenta especializada para medições precisas em exames de imagem, especialmente em radiografias de membros inferiores.</p>
+                    <ul class="tool-features">
+                        <li><i class="fas fa-check"></i> Medições dos membros</li>
+                        <li><i class="fas fa-check"></i> Cálculo automático de discrepâncias</li>
+                        <li><i class="fas fa-check"></i> Relatório com impressão</li>
+                    </ul>
+                    <a href="escanometria.html" class="btn-primary">
+                        <i class="fas fa-external-link-alt"></i>
+                        Acessar Ferramenta
+                    </a>
+                </div>
+
+                <!-- Idade Óssea -->
+                <div class="tool-card animate-in delay-3">
+                    <div class="tool-icon">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h3>Idade Óssea</h3>
+                    <p>Sistema para determinação da idade óssea através de radiografias de mão e punho com métodos automatizados de avaliação.</p>
+                    <ul class="tool-features">
+                        <li><i class="fas fa-check"></i> Método Greulich & Pyle</li>
+                        <li><i class="fas fa-check"></i> Padrões para idade</li>
+                        <li><i class="fas fa-check"></i> Relatório</li>
+                    </ul>
+                    <a href="#" class="btn-primary" onclick="showModal('idade_ossea')">
+                        <i class="fas fa-external-link-alt"></i>
+                        Acessar Ferramenta
+                    </a>
+                </div>
+
+                <!-- Mamografia -->
+                <div class="tool-card animate-in delay-4">
+                    <div class="tool-icon">
+                        <i class="fas fa-female"></i>
+                    </div>
+                    <h3>Mamografia</h3>
+                    <p>Plataforma para laudos de mamografia seguindo o sistema BI-RADS com cálculo automático de categorias e recomendações.</p>
+                    <ul class="tool-features">
+                        <li><i class="fas fa-check"></i> Sistema BI-RADS completo</li>
+                        <li><i class="fas fa-check"></i> Cálculo automático de categoria</li>
+                        <li><i class="fas fa-check"></i> Recomendações baseadas em diretrizes</li>
+                    </ul>
+                    <a href="#" class="btn-primary" onclick="showModal('mamografia')">
+                        <i class="fas fa-external-link-alt"></i>
+                        Em Breve
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Anúncio Meio da Página 2 -->
+    <div class="ad-space">
+        <div class="ad-label">Publicidade</div>
+        <div class="ad-banner" id="revenuehits-banner">
+            <!-- RevenueHits Banner 728x90 -->
+            Espaço para RevenueHits - Banner 728x90
+        </div>
+    </div>
+
+    <!-- Seção de Informações REFORMULADA -->
+    <section id="info" class="info-section">
+        <div class="container">
+            <div class="section-header animate-in">
+                <span class="section-label">INFORMAÇÕES TÉCNICAS</span>
+                <h2 class="section-title">Guia Completo de Meios de Contraste</h2>
+                <p class="section-subtitle">
+                    Informações atualizadas baseadas em diretrizes internacionais e evidências científicas
+                </p>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card animate-in delay-1">
+                    <div class="guide-icon">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <h3>Guia Completo de Meios de Contraste Radiológicos</h3>
+                    <p>
+                        Acesse nosso guia abrangente sobre meios de contraste radiológicos, desenvolvido com base nas mais recentes diretrizes internacionais. 
+                        Um recurso essencial para profissionais que buscam segurança e excelência na prática clínica.
+                    </p>
+                    
+                    <div class="guide-features">
+                        <div class="guide-feature-item">
+                            <i class="fas fa-globe-americas"></i>
+                            <h4>Diretrizes Internacionais</h4>
+                            <p>Atualizado com as recomendações mais recentes das principais sociedades de radiologia do mundo.</p>
+                        </div>
+                        
+                        <div class="guide-feature-item">
+                            <i class="fas fa-user-shield"></i>
+                            <h4>Protocolos de Segurança</h4>
+                            <p>Procedimentos detalhados para prevenção e manejo de reações adversas aos meios de contraste.</p>
+                        </div>
+                        
+                        <div class="guide-feature-item">
+                            <i class="fas fa-clipboard-check"></i>
+                            <h4>Preparo do Paciente</h4>
+                            <p>Orientações completas sobre o preparo pré-exame, incluindo jejum, hidratação e suspensão de medicamentos.</p>
+                        </div>
+                        
+                        <div class="guide-feature-item">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h4>Contraindicações</h4>
+                            <p>Lista completa de contraindicações absolutas e relativas para diferentes tipos de meios de contraste.</p>
+                        </div>
+                        
+                        <div class="guide-feature-item">
+                            <i class="fas fa-syringe"></i>
+                            <h4>Dosagem e Administração</h4>
+                            <p>Tabelas de dosagem por peso, idade e função renal, além de técnicas de administração seguras.</p>
+                        </div>
+                        
+                        <div class="guide-feature-item">
+                            <i class="fas fa-file-medical-alt"></i>
+                            <h4>Documentação Completa</h4>
+                            <p>Modelos de consentimento informado, fichas de avaliação e relatórios de incidentes.</p>
+                        </div>
+                    </div>
+                    
+                    <a href="guia-contraste.html" class="btn-guide">
+                        <i class="fas fa-book-medical"></i>
+                        Acessar Guia Completo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Anúncio Sidebar (para desktop) -->
+    <div class="ad-space" style="display: none;" id="sidebar-ad">
+        <div class="ad-label">Publicidade</div>
+        <div class="ad-sidebar" id="adsterra-sidebar">
+            <!-- Adsterra Sidebar 160x600 -->
+            Espaço para Adsterra - Sidebar 160x600
+        </div>
+    </div>
+
+    <!-- Recursos Adicionais -->
+    <section id="resources" class="resources-section">
+        <div class="container">
+            <div class="section-header animate-in">
+                <span class="section-label">RECURSOS ADICIONAIS</span>
+                <h2 class="section-title">Conteúdo Educacional</h2>
+                <p class="section-subtitle">
+                    Materiais complementares para desenvolvimento profissional contínuo
+                </p>
+            </div>
+            
+            <div class="resources-grid">
+                <div class="resource-card animate-in delay-1">
+                    <div class="resource-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <h3>Canal do YouTube</h3>
+                    <p>
+                        Vídeos educativos sobre radiologia, tutoriais das ferramentas, 
+                        casos clínicos e atualizações científicas.
+                    </p>
+                    <a href="https://www.youtube.com/@temponirad" target="_blank" class="btn-primary">
+                        <i class="fas fa-external-link-alt"></i>
+                        Acessar Canal
+                    </a>
+                </div>
+                
+                <div class="resource-card animate-in delay-2">
+                    <div class="resource-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>Protocolos e Guias</h3>
+                    <p>
+                        Bibliotecas com protocolos de exame, guias de conduta e diretrizes 
+                        atualizadas das principais sociedades.
+                    </p>
+                    <a href="#" class="btn-primary" onclick="showModal('protocolos')">
+                        <i class="fas fa-download"></i>
+                        Baixar Materiais
+                    </a>
+                </div>
+                
+                <div class="resource-card animate-in delay-3">
+                    <div class="resource-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Comunidade Médica</h3>
+                    <p>
+                        Espaço para discussão de casos, troca de experiências e networking 
+                        com profissionais da área.
+                    </p>
+                    <a href="#" class="btn-primary" onclick="showModal('comunidade')">
+                        <i class="fas fa-user-plus"></i>
+                        Participar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Anúncio Footer -->
+    <div class="ad-space">
+        <div class="ad-label">Publicidade</div>
+        <div class="ad-square" id="propellerads-footer">
+            <!-- PropellerAds Square 300x250 -->
+            Espaço para PropellerAds - Quadrado 300x250
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contact" class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>TemponiRAD</h3>
+                    <p style="color: #cbd5e0; margin-bottom: 20px; font-size: 15px;">
+                        Plataforma profissional de ferramentas e conteúdos sobre radiologia e diagnóstico por imagem.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-researchgate"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Ferramentas</h3>
+                    <ul>
+                        <li><a href="densitometria.html">Densitometria Óssea</a></li>
+                        <li><a href="radiografia/index.html">Radiografia</a></li>
+                        <li><a href="#" onclick="showModal('ultrassonografia')">Ultrassonografia</a></li>
+                        <li><a href="#" onclick="showModal('tomografia')">Tomografia</a></li>
+                        <li><a href="#" onclick="showModal('ressonancia')">Ressonância Magnética</a></li>
+                        <li><a href="#" onclick="showModal('exames_contrastados')">Exames Contrastados</a></li>
+                        <li><a href="#" onclick="showModal('escanometria')">Escanometria</a></li>
+                        <li><a href="#" onclick="showModal('idade_ossea')">Idade Óssea</a></li>
+                        <li><a href="#" onclick="showModal('mamografia')">Mamografia</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Recursos</h3>
+                    <ul>
+                        <li><a href="guia-contraste.html">Guia de Meios de Contraste</a></li>
+                        <li><a href="#resources">Canal YouTube</a></li>
+                        <li><a href="#" onclick="showModal('protocolos')">Protocolos</a></li>
+                        <li><a href="#">Artigos Científicos</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Contato</h3>
+                    <ul>
+                        <li><a href="mailto:temponi.radio@gmail.com">temponi.radio@gmail.com</a></li>
+                        <li><a href="#">Suporte Técnico</a></li>
+                        <li><a href="#">Parcerias</a></li>
+                        <li><a href="#">Consultoria</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2025 — Desenvolvido por Bárbara Vilaça Temponi. Todos os direitos reservados.</p>
+                <p>CRM/RJ 52-134.765-9 | Residente de Radiologia e Diagnóstico por Imagem</p>
+                <p style="font-size: 12px; margin-top: 10px;">
+                    <i class="fas fa-shield-alt"></i> 
+                    As ferramentas são para auxílio profissional e não substituem o julgamento clínico.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Scroll Progress
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scrollProgress').style.transform = `scaleX(${scrolled / 100})`;
+        });
+
+        // Smooth Scrolling para âncoras
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // Atualizar navegação ativa
+                    document.querySelectorAll('.main-nav a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Scroll suave
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Animação de entrada
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos para animação
+        document.querySelectorAll('.section-header, .tool-card, .info-card, .resource-card, .guide-feature-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Mostrar/ocultar sidebar ad baseado no tamanho da tela
+        function toggleSidebarAd() {
+            const sidebarAd = document.getElementById('sidebar-ad');
+            if (window.innerWidth >= 1200) {
+                sidebarAd.style.display = 'block';
+            } else {
+                sidebarAd.style.display = 'none';
+            }
+        }
+
+        // Inicializar sidebar ad
+        toggleSidebarAd();
+        window.addEventListener('resize', toggleSidebarAd);
+
+        // Modal Functions - Atualizada para incluir as novas ferramentas
+        function showModal(type) {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            let content = '';
+            
+            switch(type) {
+                case 'ultrassonografia':
+                    content = `
+                        <h3 style="margin-bottom: 20px; color: var(--text-dark);">Ultrassonografia</h3>
+                        <p style="margin-bottom: 20px; color: var(--text-light);">
+                            Ferramenta em desenvolvimento para laudos automatizados de ultrassonografia.
+                            Incluirá:
+                        </p>
+                        <ul style="color: var(--text-medium); margin-bottom: 30px; padding-left: 20px;">
+                            <li>USG Abdominal Completa</li>
+                            <li>USG Pélvica e Obstétrica</li>
+                            <li>Doppler Vascular e Cardíaco</li>
+                            <li>USG de Partes Moles</li>
+                            <li>Medições Automatizadas</li>
+                        </ul>
+                        <p style="color: var(--text-light);">
+                            <strong>Previsão de lançamento:</strong> Março 2025
+                        </p>
+                    `;
+                    break;
+                    
+                case 'exames_contrastados':
+                    content = `
+                        <h3 style="margin-bottom: 20px; color: var(--text-dark);">Exames Contrastados</h3>
+                        <p style="margin-bottom: 20px; color: var(--text-light);">
+                            Sistema especializado para laudos de exames que utilizam meios de contraste.
+                        </p>
+                        <ul style="color: var(--text-medium); margin-bottom: 30px; padding-left: 20px;">
+                            <li>Check-list completo de segurança pré-contraste</li>
+                            <li>Documentação automática de reações adversas</li>
+                            <li>Protocolos específicos por tipo de contraste</li>
+                            <li>Calculadora de dose baseada em função renal</li>
+                            <li>Modelos de consentimento informado</li>
+                        </ul>
+                        <p style="color: var(--text-light);">
+                            <strong>Previsão de lançamento:</strong> Maio 2025
+                        </p>
+                    `;
+                    break;
+                    
+                case 'escanometria':
+                    content = `
+                        <h3 style="margin-bottom: 20px; color: var(--text-dark);">Escanometria</h3>
+                        <p style="margin-bottom: 20px; color: var(--text-light);">
+                            Ferramenta especializada para medições precisas em radiografias de membros inferiores.
+                        </p>
+                        <ul style="color: var(--text-medium); margin-bottom: 30px; padding-left: 20px;">
+                            <li>Medição de discrepância de comprimento de membros</li>
+                            <li>Cálculo de ângulos articulares</li>
+                            <li>Avaliação de alinhamento ósseo</li>
+                            <li>Relatórios com valores de referência</li>
+                            <li>Comparação temporal de medições</li>
+                        </ul>
+                        <a href="escanometria.html" class="btn-primary" style="display: inline-block;">
+                            <i class="fas fa-external-link-alt"></i>
+                            Acessar Ferramenta
+                        </a>
+                    `;
+                    break;
+                    
+                case 'idade_ossea':
+                    content = `
+                        <h3 style="margin-bottom: 20px; color: var(--text-dark);">Idade Óssea</h3>
+                        <p style="margin-bottom: 20px; color: var(--text-light);">
+                            Sistema para determinação da idade óssea através de radiografias de mão e punho.
+                        </p>
+                        <ul style="color: var(--text-medium); margin-bottom: 30px; padding-left: 20px;">
+                            <li>Método Greulich & Pyle automatizado</li>
+                            <li>Método Tanner-Whitehouse 3 (TW3)</li>
+                            <li>Comparação com curvas de crescimento</li>
+                            <li>Cálculo de idade óssea vs idade cronológica</li>
+                            <li>Relatórios detalhados com percentis</li>
+                        </ul>
+                        <a href="idade-ossea.html" class="btn-primary" style="display: inline-block;">
+                            <i class="fas fa-external-link-alt"></i>
+                            Acessar Ferramenta
+                        </a>
+                    `;
+                    break;
+                    
+                case 'mamografia':
+                    content = `
+                        <h3 style="margin-bottom: 20px; color: var(--text-dark);">Mamografia</h3>
+                        <p style="margin-bottom: 20px; color: var(--text-light);">
+                            Plataforma para laudos de mamografia seguindo o sistema BI-RADS.
+                        </p>
+                        <ul style="color: var(--text-medium); margin-bottom: 30px; padding-left: 20px;">
+                            <li>Sistema BI-RADS completo (0-6)</li>
+                            <li>Cálculo automático de categoria</li>
+                            <li>Descrição padronizada de achados</li>
+                            <li>Recomendações baseadas em diretrizes</li>
+                            <li>Comparação com exames anteriores</li>
+                        </ul>
+                        <p style="color: var(--text-light);">
+                            <strong>Previsão de lançamento:</strong> Abril 2025
+                        </p>
+                    `;
+                    break;
+                    
+                case 'protocolos':
+                    content = `
+                        <h3 style="margin-bottom: 20px; color: var(--text-dark);">Protocolos e Guias</h3>
+                        <p style="margin-bottom: 20px; color: var(--text-light);">
+                            Materiais disponíveis para download:
+                        </p>
+                        <ul style="color: var(--text-medium); margin-bottom: 30px; padding-left: 20px;">
+                            <li>Protocolos de Contraste - Versão 2025</li>
+                            <li>Guias de Conduta em Radiologia de Urgência</li>
+                            <li>Diretrizes de Rastreamento Oncológico</li>
+                            <li>Manual de Boas Práticas em TC e RM</li>
+                        </ul>
+                        <a href="#" class="btn-primary" style="display: inline-block;">
+                            <i class="fas fa-download"></i>
+                            Solicitar Acesso
+                        </a>
+                    `;
+                    break;
+                    
+                default:
+                    content = `
+                        <h3 style="margin-bottom: 20px; color: var(--text-dark);">Recurso em Desenvolvimento</h3>
+                        <p style="margin-bottom: 20px; color: var(--text-light);">
+                            Esta funcionalidade está em fase de desenvolvimento e será lançada em breve.
+                            Para mais informações, entre em contato.
+                        </p>
+                    `;
+            }
+            
+            modalContent.innerHTML = content;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) {
+                closeModal();
+            }
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.main-header');
+            if (window.scrollY > 100) {
+                header.style.boxShadow = 'var(--shadow-md)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Inicializar animações na carga da página
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.animate-in').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+            });
+        });
+
+        // Função para carregar anúncios (substituir pelos códigos reais)
+        function loadAds() {
+            // Exemplo de como carregar os anúncios
+            console.log('Carregando anúncios...');
+            
+            // Adsterra Top Banner
+            // document.getElementById('adsterra-top').innerHTML = '<!-- Seu código Adsterra aqui -->';
+            
+            // PropellerAds Square
+            // document.getElementById('propellerads-square').innerHTML = '<!-- Seu código PropellerAds aqui -->';
+            
+            // RevenueHits Banner
+            // document.getElementById('revenuehits-banner').innerHTML = '<!-- Seu código RevenueHits aqui -->';
+            
+            // Adsterra Sidebar
+            // document.getElementById('adsterra-sidebar').innerHTML = '<!-- Seu código Adsterra aqui -->';
+            
+            // PropellerAds Footer
+            // document.getElementById('propellerads-footer').innerHTML = '<!-- Seu código PropellerAds aqui -->';
+        }
+
+        // Carregar anúncios quando a página estiver pronta
+        window.addEventListener('DOMContentLoaded', loadAds);
+    </script>
+</body>
+</html>
